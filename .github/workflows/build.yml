@@ -1,0 +1,49 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build JSON from CSVs
+        run: node scripts/csv2json.js
+
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site/v1
+          mkdir -p _site/assets
+          cp v1/wapuus.json _site/v1/
+          cp v1/models.json _site/v1/
+          cp -r assets/wapuus _site/assets/ 2>/dev/null || true
+          cp -r assets/models _site/assets/ 2>/dev/null || true
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

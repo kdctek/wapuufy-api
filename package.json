@@ -1,0 +1,9 @@
+{
+  "name": "wapuufy-api",
+  "version": "1.0.0",
+  "description": "Community Wapuu character library for the Wapuufy app",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/csv2json.js"
+  }
+}
