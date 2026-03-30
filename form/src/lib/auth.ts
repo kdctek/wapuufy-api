@@ -2,18 +2,23 @@ import type { DeviceCodeResponse, GitHubUser } from '../types/wapuu';
 
 const CLIENT_ID = 'Ov23liEjXU6GYL3oDQEc';
 const TOKEN_KEY = 'wapuufy_gh_token';
+const PROXY_URL = 'https://wapuufy-gh-auth.kdc.workers.dev';
 
-export async function requestDeviceCode(): Promise<DeviceCodeResponse> {
-  const res = await fetch('https://github.com/login/device/code', {
+async function proxyFetch(target: string, body: object): Promise<Response> {
+  return fetch(`${PROXY_URL}?target=${encodeURIComponent(target)}`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      client_id: CLIENT_ID,
-      scope: 'public_repo',
-    }),
+    body: JSON.stringify(body),
+  });
+}
+
+export async function requestDeviceCode(): Promise<DeviceCodeResponse> {
+  const res = await proxyFetch('https://github.com/login/device/code', {
+    client_id: CLIENT_ID,
+    scope: 'public_repo',
   });
 
   if (!res.ok) {
@@ -36,17 +41,10 @@ export async function pollForToken(
 
     await new Promise((r) => setTimeout(r, interval * 1000));
 
-    const res = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: CLIENT_ID,
-        device_code: deviceCode,
-        grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
-      }),
+    const res = await proxyFetch('https://github.com/login/oauth/access_token', {
+      client_id: CLIENT_ID,
+      device_code: deviceCode,
+      grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
     });
 
     const data = await res.json();
