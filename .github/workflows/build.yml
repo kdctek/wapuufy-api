@@ -26,6 +26,12 @@ jobs:
       - name: Build JSON from CSVs
         run: node scripts/csv2json.js
 
+      - name: Build submission form
+        working-directory: form
+        run: |
+          npm ci
+          npm run build
+
       - name: Prepare Pages artifact
         run: |
           mkdir -p _site/v1
@@ -34,6 +40,7 @@ jobs:
           cp v1/models.json _site/v1/
           cp -r assets/wapuus _site/assets/ 2>/dev/null || true
           cp -r assets/models _site/assets/ 2>/dev/null || true
+          cp -r form/dist/* _site/
           cp CNAME _site/CNAME
           touch _site/.nojekyll
 
