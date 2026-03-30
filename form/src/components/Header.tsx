@@ -47,7 +47,7 @@ export function Header() {
     <header className="wapuu-header">
       <div className="wapuu-header__inner">
         <a href="https://wapuufy.com" className="wapuu-header__logo">
-          Wapuufy
+          <img src="/wapuufy-wordmark.svg" alt="Wapuufy" className="wapuu-header__wordmark" />
         </a>
         <div className="wapuu-header__actions">
           <button

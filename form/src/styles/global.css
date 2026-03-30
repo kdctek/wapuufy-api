@@ -144,11 +144,14 @@ a:hover {
 }
 
 .wapuu-header__logo {
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--foreground);
+  display: flex;
+  align-items: center;
   text-decoration: none;
+}
+
+.wapuu-header__wordmark {
+  height: 1.75rem;
+  width: auto;
 }
 
 .wapuu-header__actions {
