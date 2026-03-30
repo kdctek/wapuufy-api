@@ -34,6 +34,7 @@ jobs:
           cp v1/models.json _site/v1/
           cp -r assets/wapuus _site/assets/ 2>/dev/null || true
           cp -r assets/models _site/assets/ 2>/dev/null || true
+          cp CNAME _site/CNAME
           touch _site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
